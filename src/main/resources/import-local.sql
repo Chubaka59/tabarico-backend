@@ -34,6 +34,7 @@ insert into users(first_name, last_name, password, phone, username, role_id, hol
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota) values ('Test', '29', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '123456789', '29',2, false, false, false, true, true)
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota) values ('Test', 'Milice', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '0', 'Milice',3, false, false, false, false, false)
 
+insert into consumable(name, quantity) values ('Kit de réparation', 100)
 
 insert into product(name, clean_money, dirty_money, stock) values ('Cigarette', 70, 35, 1000)
 insert into product(name, clean_money, dirty_money, stock) values ('Menthol', 90, 60, 100)
