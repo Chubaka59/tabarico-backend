@@ -1,8 +1,8 @@
 package com.gtarp.tabaricobackend.controllers;
 
-import com.gtarp.tabaricobackend.dto.UserDto;
-import com.gtarp.tabaricobackend.entities.User;
-import com.gtarp.tabaricobackend.services.UserService;
+import com.gtarp.tabaricobackend.dto.ContractDto;
+import com.gtarp.tabaricobackend.entities.Contract;
+import com.gtarp.tabaricobackend.services.CrudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,30 +16,30 @@ import java.util.List;
 
 @Slf4j
 @RestController
-public class UserController {
+public class ContractController {
     @Autowired
-    private UserService userService;
+    private CrudService<Contract, ContractDto> contractService;
 
-    @GetMapping("/users")
-    public List<User> getUserList() {
-        return userService.getAll();
+    @GetMapping("/contracts")
+    public List<Contract> getContractList() {
+        return contractService.getAll();
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Integer id) {
+    @GetMapping("/contracts/{id}")
+    public ResponseEntity<Contract> getContract(@PathVariable Integer id) {
         try {
-            User user = userService.getById(id);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            Contract contract = contractService.getById(id);
+            return new ResponseEntity<>(contract, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<User> insert(@RequestBody @Validated UserDto userDto) {
+    @PostMapping("/contracts")
+    public ResponseEntity<Contract> insert(@RequestBody @Validated ContractDto contractDto) {
         try {
-            userService.insert(userDto);
+            contractService.insert(contractDto);
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .build()
@@ -51,10 +51,10 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<User> delete(@PathVariable Integer id) {
+    @DeleteMapping("/contracts/{id}")
+    public ResponseEntity<Contract> delete(@PathVariable Integer id) {
         try {
-            userService.delete(id);
+            contractService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -62,10 +62,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity<User> update(@RequestBody @Validated UserDto userDto, @PathVariable Integer id) {
+    @PutMapping("/contracts/{id}")
+    public ResponseEntity<Contract> update(@RequestBody @Validated ContractDto contractDto, @PathVariable Integer id) {
         try {
-            userService.update(id, userDto);
+            contractService.update(id, contractDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
