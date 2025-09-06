@@ -37,6 +37,8 @@ public class User implements UpdatableEntity<User, UserDto> {
     private LocalDate endOfHoliday;
     private boolean warning1 = false;
     private boolean warning2 = false;
+    private Integer cleanMoneySalary;
+    private Integer dirtyMoneySalary;
     private Integer cleanMoneySalaryPreviousWeek;
     private Integer dirtyMoneySalaryPreviousWeek;
     private boolean quota = false;
