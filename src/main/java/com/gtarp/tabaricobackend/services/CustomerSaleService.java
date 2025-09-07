@@ -1,7 +1,9 @@
 package com.gtarp.tabaricobackend.services;
 
+import com.gtarp.tabaricobackend.dto.accounting.CreateCustomerSaleDto;
 import com.gtarp.tabaricobackend.dto.accounting.CustomerSaleDto;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
+import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 
 import java.util.List;
 
@@ -25,4 +27,18 @@ public interface CustomerSaleService {
      * @param id the id of the customer sale
      */
     public void delete(int id);
+
+    /**
+     * get all type of sales
+     * @return return an array with all type of sales
+     */
+    TypeOfSale[] getTypeOfSales();
+
+    /**
+     * create a customer sale
+     * @param createCustomerSaleDto the information of the customer sale
+     * @param username the username of the user who own the sale
+     * @return the customer sale
+     */
+    CustomerSale insert(CreateCustomerSaleDto createCustomerSaleDto, String username);
 }

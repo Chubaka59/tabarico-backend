@@ -27,5 +27,11 @@ public interface ExporterSaleService {
      */
     void delete(int id);
 
+    /**
+     * create an exporter sale
+     * @param createExporterSaleDto the information of the exporter sale
+     * @param username the username of the user who own the sale
+     * @return the exporter sale
+     */
     ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username);
 }
