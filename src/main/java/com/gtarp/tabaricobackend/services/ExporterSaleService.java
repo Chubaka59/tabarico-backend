@@ -1,5 +1,6 @@
 package com.gtarp.tabaricobackend.services;
 
+import com.gtarp.tabaricobackend.dto.accounting.CreateExporterSaleDto;
 import com.gtarp.tabaricobackend.dto.accounting.ExporterSaleDto;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 
@@ -24,5 +25,7 @@ public interface ExporterSaleService {
      * delete a exporter sale
      * @param id the id of the exporter sale
      */
-    public void delete(int id);
+    void delete(int id);
+
+    ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username);
 }
