@@ -5,10 +5,11 @@ import com.gtarp.tabaricobackend.entities.Product;
 import com.gtarp.tabaricobackend.exception.ProductNotFoundException;
 import com.gtarp.tabaricobackend.repositories.ProductRepository;
 import com.gtarp.tabaricobackend.services.AbstractCrudService;
+import com.gtarp.tabaricobackend.services.ProductService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductServiceImpl extends AbstractCrudService<Product, ProductRepository, ProductDto> {
+public class ProductServiceImpl extends AbstractCrudService<Product, ProductRepository, ProductDto> implements ProductService {
 
     public ProductServiceImpl(ProductRepository repository) {
         super(repository);
@@ -22,5 +23,9 @@ public class ProductServiceImpl extends AbstractCrudService<Product, ProductRepo
     @Override
     public Product insert(ProductDto productDto) {
         return null;
+    }
+
+    public Product findProductByName(String name) {
+        return this.repository.findProductByName(name).orElseThrow(() -> new ProductNotFoundException(name));
     }
 }

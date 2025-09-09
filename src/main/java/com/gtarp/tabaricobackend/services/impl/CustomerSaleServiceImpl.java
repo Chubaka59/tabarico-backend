@@ -5,14 +5,13 @@ import com.gtarp.tabaricobackend.dto.CustomerDirtySaleRateDto;
 import com.gtarp.tabaricobackend.dto.ProductDto;
 import com.gtarp.tabaricobackend.dto.accounting.CreateCustomerSaleDto;
 import com.gtarp.tabaricobackend.dto.accounting.CustomerSaleDto;
-import com.gtarp.tabaricobackend.entities.Contract;
-import com.gtarp.tabaricobackend.entities.CustomerDirtySaleRate;
-import com.gtarp.tabaricobackend.entities.Product;
-import com.gtarp.tabaricobackend.entities.User;
+import com.gtarp.tabaricobackend.entities.*;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 import com.gtarp.tabaricobackend.exception.CustomerSaleInformationErrorException;
 import com.gtarp.tabaricobackend.exception.CustomerSaleNotFoundException;
+import com.gtarp.tabaricobackend.repositories.ProductRepository;
+import com.gtarp.tabaricobackend.repositories.StockRepository;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.CustomerSaleRepository;
 import com.gtarp.tabaricobackend.services.CrudService;
@@ -45,6 +44,10 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
     private CrudService<CustomerDirtySaleRate, CustomerDirtySaleRateDto> customerDirtySaleRateService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private StockRepository stockRepository;
 
     public List<CustomerSaleDto> findAllByUserForCurrentWeek(String username) {
         User user = userService.getByUsername(username);
@@ -77,11 +80,13 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
         return TypeOfSale.values();
     }
 
+    @Transactional
     public CustomerSale insert(CreateCustomerSaleDto createCustomerSaleDto, String username) {
         User user = userService.getByUsername(username);
+        Product product = productService.getById(createCustomerSaleDto.getProduct());
         CustomerSale customerSale = new CustomerSale();
         customerSale.setDate(LocalDateTime.now());
-        customerSale.setProduct(productService.getById(createCustomerSaleDto.getProduct()));
+        customerSale.setProduct(product);
         customerSale.setTypeOfSale(createCustomerSaleDto.getTypeOfSale());
         customerSale.setQuantity(createCustomerSaleDto.getQuantity());
         if (createCustomerSaleDto.getContract() != null) {
@@ -94,12 +99,22 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
         customerSale.setUser(user);
         if (createCustomerSaleDto.getTypeOfSale() == TypeOfSale.cleanMoney) {
             user.setCleanMoneySalary(user.getCleanMoneySalary() + (createCustomerSaleDto.getPrice() * user.getRole().getRedistributionRate() / 100));
-            userRepository.save(user);
         } else {
             user.setDirtyMoneySalary(user.getDirtyMoneySalary() + (createCustomerSaleDto.getPrice() * customerDirtySaleRateService.getById(1).getCustomerDirtySaleRate() / 100));
-            userRepository.save(user);
         }
 
+        Stock stock = new Stock();
+        stock.setDate(LocalDate.now());
+        stock.setProduct(product);
+        stock.setTypeOfStockMovement(TypeOfStockMovement.customerSale);
+        stock.setQuantityMouvement(createCustomerSaleDto.getQuantity());
+        stock.setUser(user);
+
+        product.setStock(product.getStock() - stock.getQuantityMouvement());
+
+        stockRepository.save(stock);
+        productRepository.save(product);
+        userRepository.save(user);
         return customerSaleRepository.save(customerSale);
     }
 

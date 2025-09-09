@@ -42,7 +42,7 @@ insert into product(name, clean_money, dirty_money, stock) values ('Menthol', 90
 insert into contract(company, reduction) values ('Cantina', 10)
 insert into contract(company, reduction) values ('Brasserie', 25)
 
-insert into stock(date, type_of_stock_movement, product_id, operation_stock, quantity, stock, user_id) values ('2025-06-26', 1, 1, 1, 100, 1000, 1)
+insert into stock(date, type_of_stock_movement, product_id, quantity_mouvement, user_id) values ('2025-09-09', 1, 1, 100, 1)
 
 insert into customer_dirty_sale_rate(id, customer_dirty_sale_rate) values (1, 35)
 
