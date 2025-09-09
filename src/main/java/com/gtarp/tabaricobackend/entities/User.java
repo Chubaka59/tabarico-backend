@@ -1,6 +1,7 @@
 package com.gtarp.tabaricobackend.entities;
 
 import com.gtarp.tabaricobackend.dto.UserDto;
+import com.gtarp.tabaricobackend.dto.accounting.DashboardDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -70,6 +71,21 @@ public class User implements UpdatableEntity<User, UserDto> {
 
     public User updatePassword(UserDto userDto) {
         this.password = userDto.getPassword();
+        return this;
+    }
+
+    public User updateFromDashboard(DashboardDto dashboardDto) {
+        this.quota = dashboardDto.isQuota();
+        this.exporterQuota = dashboardDto.isExporterQuota();
+        if (dashboardDto.isHoliday() && dashboardDto.getEndOfHoliday() != null && dashboardDto.getEndOfHoliday().isAfter(LocalDate.now())) {
+            this.holiday = dashboardDto.isHoliday();
+            this.endOfHoliday = dashboardDto.getEndOfHoliday();
+        } else {
+            this.holiday = false;
+            this.endOfHoliday = null;
+        }
+        this.warning1 = dashboardDto.isWarning1();
+        this.warning2 = dashboardDto.isWarning2();
         return this;
     }
 }
