@@ -1,5 +1,6 @@
 package com.gtarp.tabaricobackend.entities.accounting;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gtarp.tabaricobackend.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class ExporterSale {
     private LocalDateTime date;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
     private Integer quantity;
     private Integer level;

@@ -1,5 +1,6 @@
 package com.gtarp.tabaricobackend.entities.accounting;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gtarp.tabaricobackend.entities.Contract;
 import com.gtarp.tabaricobackend.entities.Product;
 import com.gtarp.tabaricobackend.entities.User;
@@ -32,5 +33,6 @@ public class CustomerSale {
     private BigDecimal amount;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 }

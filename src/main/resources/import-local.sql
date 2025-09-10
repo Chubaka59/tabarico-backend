@@ -1,6 +1,5 @@
 insert into role(name, redistribution_rate, salary) values ('Responsable', 40, 30000)
 insert into role(name, redistribution_rate, salary) values ('CDI', 35, 20000)
-insert into role(name) values ('Milice')
 
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota, clean_money_salary, dirty_money_salary, clean_money_salary_previous_week, dirty_money_salary_previous_week) values ('Ramon', 'Cruz', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '123456789', 'ramon.cruz',1, false, false, false, true, false, 10000, 20000, 30000, 40000)
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, end_of_holiday, warning1, warning2, quota, exporter_quota) values ('Test', '1', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '123456789', '1',1, true, '2025-12-12', false, false, false, true)
@@ -32,7 +31,6 @@ insert into users(first_name, last_name, password, phone, username, role_id, hol
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota) values ('Test', '27', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '123456789', '27',2, false, false, false, true, true)
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota) values ('Test', '28', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '123456789', '28',2, false, false, false, true, true)
 insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota) values ('Test', '29', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '123456789', '29',2, false, false, false, true, true)
-insert into users(first_name, last_name, password, phone, username, role_id, holiday, warning1, warning2, quota, exporter_quota) values ('Test', 'Milice', '$2a$10$UCEisteDN7GY7d7voMGYZOeGncH4Jd4daExzPeninBel6v8ybqIzG', '0', 'Milice',3, false, false, false, false, false)
 
 insert into consumable(name, quantity) values ('Kit de réparation', 100)
 

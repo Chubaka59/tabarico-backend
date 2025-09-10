@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -24,4 +25,5 @@ public class UserDto {
     private String phone;
     @NotNull
     private Role role;
+    private MultipartFile identityCardImage;
 }

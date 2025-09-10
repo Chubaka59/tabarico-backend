@@ -1,15 +1,21 @@
 package com.gtarp.tabaricobackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gtarp.tabaricobackend.dto.UserDto;
 import com.gtarp.tabaricobackend.dto.accounting.DashboardDto;
+import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
+import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -45,10 +51,16 @@ public class User implements UpdatableEntity<User, UserDto> {
     private boolean quota = false;
     private boolean exporterQuota = false;
     private String identityCardImage;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CustomerSale> customerSales = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ExporterSale> exporterSales = new ArrayList<>();
 
     public User(UserDto userDto) {
         this.username = userDto.getUsername();
-        this.password = userDto.getPassword();
+        this.password = new BCryptPasswordEncoder().encode(userDto.getPassword());
         this.lastName = userDto.getLastName();
         this.firstName = userDto.getFirstName();
         this.phone = userDto.getPhone();
@@ -57,7 +69,9 @@ public class User implements UpdatableEntity<User, UserDto> {
 
     public User update(UserDto userDto) {
         this.username = userDto.getUsername();
-        this.password = userDto.getPassword();
+        if(userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
+            this.password = new BCryptPasswordEncoder().encode(userDto.getPassword());
+        }
         this.lastName = userDto.getLastName();
         this.firstName = userDto.getFirstName();
         this.phone = userDto.getPhone();
@@ -69,8 +83,8 @@ public class User implements UpdatableEntity<User, UserDto> {
         return firstName + " " + lastName;
     }
 
-    public User updatePassword(UserDto userDto) {
-        this.password = userDto.getPassword();
+    public User updatePassword(String password) {
+        this.password = new BCryptPasswordEncoder().encode(password);
         return this;
     }
 
