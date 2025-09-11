@@ -21,8 +21,13 @@ public class PersonalDashboardDto {
     private List<ExporterSaleDto> exporterSaleDtoList;
 
     public PersonalDashboardDto(User user, List<CustomerSaleDto> customerSaleDtoList, List<ExporterSaleDto> exporterSaleDtoList) {
-        cleanMoneySalary = user.getCleanMoneySalary();
-        dirtyMoneySalary = user.getDirtyMoneySalary();
+        if (user.isQuota() && user.isExporterQuota()) {
+            cleanMoneySalary = user.getCleanMoneySalary();
+            dirtyMoneySalary = user.getDirtyMoneySalary();
+        } else {
+            cleanMoneySalary = 0;
+            dirtyMoneySalary = 0;
+        }
         cleanMoneySalaryPreviousWeek = user.getCleanMoneySalaryPreviousWeek();
         dirtyMoneySalaryPreviousWeek = user.getDirtyMoneySalaryPreviousWeek();
         quota = user.isQuota();

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StockDto {
     private Integer productId;
+    private Integer consumableId;
     @NotNull
     private Integer quantity;
 }

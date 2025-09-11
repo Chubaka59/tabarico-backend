@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -107,5 +108,23 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
             throw new StorageException("Failed to store file.", e);
         }
         return fileName;
+    }
+
+    @Transactional
+    public void resetWeeklyUserAccounting() {
+        List<User> userList = repository.findAll();
+        for (User user : userList) {
+            if (user.isQuota() && user.isExporterQuota()) {
+                user.setCleanMoneySalaryPreviousWeek(user.getCleanMoneySalary());
+                user.setDirtyMoneySalaryPreviousWeek(user.getDirtyMoneySalary());
+            } else {
+                user.setCleanMoneySalaryPreviousWeek(0);
+                user.setDirtyMoneySalaryPreviousWeek(0);
+            }
+            user.setCleanMoneySalary(0);
+            user.setDirtyMoneySalary(0);
+            user.setQuota(false);
+            user.setExporterQuota(false);
+        }
     }
 }

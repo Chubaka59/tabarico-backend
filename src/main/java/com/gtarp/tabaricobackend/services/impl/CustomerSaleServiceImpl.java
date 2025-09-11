@@ -104,7 +104,7 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
         }
 
         Stock stock = new Stock();
-        stock.setDate(LocalDate.now());
+        stock.setDate(LocalDateTime.now());
         stock.setProduct(product);
         stock.setTypeOfStockMovement(TypeOfStockMovement.customerSale);
         stock.setQuantityMouvement(createCustomerSaleDto.getQuantity());

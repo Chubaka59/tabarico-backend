@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -16,11 +16,14 @@ public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private LocalDate date;
+    private LocalDateTime date;
     private TypeOfStockMovement typeOfStockMovement;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "consumable_id")
+    private Consumable consumable;
     private Integer quantityMouvement;
     @ManyToOne
     @JoinColumn(name = "user_id")

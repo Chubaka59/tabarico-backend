@@ -1,11 +1,15 @@
 package com.gtarp.tabaricobackend.services.impl;
 
+import com.gtarp.tabaricobackend.dto.ConsumableDto;
 import com.gtarp.tabaricobackend.dto.StockDto;
+import com.gtarp.tabaricobackend.entities.Consumable;
 import com.gtarp.tabaricobackend.entities.Product;
 import com.gtarp.tabaricobackend.entities.Stock;
 import com.gtarp.tabaricobackend.entities.TypeOfStockMovement;
+import com.gtarp.tabaricobackend.repositories.ConsumableRepository;
 import com.gtarp.tabaricobackend.repositories.ProductRepository;
 import com.gtarp.tabaricobackend.repositories.StockRepository;
+import com.gtarp.tabaricobackend.services.CrudService;
 import com.gtarp.tabaricobackend.services.ProductService;
 import com.gtarp.tabaricobackend.services.StockService;
 import com.gtarp.tabaricobackend.services.UserService;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional
@@ -27,26 +32,37 @@ public class StockServiceImpl implements StockService {
     private ProductRepository productRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CrudService<Consumable, ConsumableDto> consumableService;
+    @Autowired
+    private ConsumableRepository consumableRepository;
 
     @Transactional
     @Override
     public void insert(StockDto stockDto, String username) {
-        Product product = productService.getById(stockDto.getProductId());
-
-        Stock newStock = new Stock();
-        newStock.setDate(LocalDate.now());
+                Stock newStock = new Stock();
+        newStock.setDate(LocalDateTime.now());
         newStock.setTypeOfStockMovement(TypeOfStockMovement.stockModification);
-        newStock.setProduct(product);
         newStock.setQuantityMouvement(stockDto.getQuantity());
         newStock.setUser(userService.getByUsername(username));
 
-        product.setStock(product.getStock() + newStock.getQuantityMouvement());
-        productRepository.save(product);
+        if (stockDto.getProductId() != null) {
+            Product product = productService.getById(stockDto.getProductId());
+            newStock.setProduct(product);
+            product.setStock(product.getStock() + newStock.getQuantityMouvement());
+            productRepository.save(product);
+        } else {
+            Consumable consumable = consumableService.getById(stockDto.getConsumableId());
+            newStock.setConsumable(consumable);
+            consumable.setQuantity(consumable.getQuantity() + newStock.getQuantityMouvement());
+            consumableRepository.save(consumable);
+        }
+
         stockRepository.save(newStock);
     }
 
     @Override
     public List<Stock> getStockDtoListByDate(String date) {
-        return stockRepository.getStockListByDate(LocalDate.parse(date));
+        return stockRepository.getStockByDateBetween(LocalDate.parse(date).atStartOfDay(), LocalDate.parse(date).plusDays(1).atStartOfDay());
     }
 }

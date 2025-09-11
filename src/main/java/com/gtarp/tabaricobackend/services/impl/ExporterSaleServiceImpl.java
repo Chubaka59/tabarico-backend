@@ -5,9 +5,11 @@ import com.gtarp.tabaricobackend.dto.accounting.ExporterSaleDto;
 import com.gtarp.tabaricobackend.entities.User;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.exception.ExporterSaleNotFoundException;
+import com.gtarp.tabaricobackend.repositories.UserRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
 import com.gtarp.tabaricobackend.services.ExporterSaleService;
 import com.gtarp.tabaricobackend.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +21,15 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
+@Transactional
 @Service
 public class ExporterSaleServiceImpl implements ExporterSaleService {
     @Autowired
     private ExporterSaleRepository exporterSaleRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<ExporterSaleDto> findAllByUserForCurrentWeek(String username) {
         User user = userService.getByUsername(username);
@@ -53,6 +58,7 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
         exporterSaleRepository.delete(exporterSale);
     }
 
+    @Transactional
     @Override
     public ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username) {
         User user = userService.getByUsername(username);
@@ -64,6 +70,10 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
         exporterSale.setEmployeeAmount(calculateExporterEmployeeAmount(createExporterSaleDto));
         //le montant employé * 0.3 pour obtenir le montant entreprise
         exporterSale.setCompanyAmount(exporterSale.getEmployeeAmount().multiply(BigDecimal.valueOf(0.3)).setScale(0, RoundingMode.HALF_UP));
+
+        //On ajoute la prime au salaire de l'employé
+        user.setCleanMoneySalary(user.getCleanMoneySalary() + exporterSale.getCompanyAmount().intValue() * user.getRole().getRedistributionRate() / 100);
+        userRepository.save(user);
         return exporterSaleRepository.save(exporterSale);
     }
 

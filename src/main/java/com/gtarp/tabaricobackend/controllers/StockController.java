@@ -28,6 +28,10 @@ public class StockController {
     @PostMapping("/stocks")
     public ResponseEntity<Stock> insert(@RequestBody @Validated StockDto stockDto, Authentication authentication) {
         try {
+            if (stockDto.getProductId() != null && stockDto.getConsumableId() != null) {
+                log.error("Il ne faut spécifié qu'un seul type à mettre à jour");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             stockService.insert(stockDto, authentication.getName());
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()

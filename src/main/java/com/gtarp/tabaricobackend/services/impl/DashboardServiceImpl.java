@@ -76,8 +76,13 @@ public class DashboardServiceImpl implements DashboardService {
 
             dashboardDto.setQuota(user.isQuota());
             dashboardDto.setExporterQuota(user.isExporterQuota());
-            dashboardDto.setCleanMoneySalary(user.getCleanMoneySalary());
-            dashboardDto.setDirtyMoneySalary(user.getDirtyMoneySalary());
+            if (user.isQuota() && user.isExporterQuota()) {
+                dashboardDto.setCleanMoneySalary(user.getCleanMoneySalary());
+                dashboardDto.setDirtyMoneySalary(user.getDirtyMoneySalary());
+            } else {
+                dashboardDto.setCleanMoneySalary(0);
+                dashboardDto.setDirtyMoneySalary(0);
+            }
             dashboardDto.setCleanMoneySalaryPreviousWeek(user.getCleanMoneySalaryPreviousWeek());
             dashboardDto.setDirtyMoneySalaryPreviousWeek(user.getDirtyMoneySalaryPreviousWeek());
             if (user.getEndOfHoliday() != null && user.getEndOfHoliday().isAfter(LocalDate.now())) {
@@ -101,7 +106,15 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public void updateUser(String username, DashboardDto dashboardDto) {
-        User user = userService.getByUsername(username).updateFromDashboard(dashboardDto);
+        User user = userService.getByUsername(username);
+        boolean before = user.isQuota() && user.isExporterQuota();
+        boolean after = dashboardDto.isQuota() && dashboardDto.isExporterQuota();
+        user.updateFromDashboard(dashboardDto);
+        if (!before && after) {
+            user.setCleanMoneySalary(user.getCleanMoneySalary() + user.getRole().getSalary());
+        } else if(before && !after) {
+            user.setCleanMoneySalary(user.getCleanMoneySalary() - user.getRole().getSalary());
+        }
         userRepository.save(user);
     }
 
