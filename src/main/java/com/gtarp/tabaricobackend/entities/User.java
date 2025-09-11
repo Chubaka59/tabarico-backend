@@ -44,10 +44,10 @@ public class User implements UpdatableEntity<User, UserDto> {
     private LocalDate endOfHoliday;
     private boolean warning1 = false;
     private boolean warning2 = false;
-    private Integer cleanMoneySalary;
-    private Integer dirtyMoneySalary;
-    private Integer cleanMoneySalaryPreviousWeek;
-    private Integer dirtyMoneySalaryPreviousWeek;
+    private Integer cleanMoneySalary = 0;
+    private Integer dirtyMoneySalary = 0;
+    private Integer cleanMoneySalaryPreviousWeek = 0;
+    private Integer dirtyMoneySalaryPreviousWeek = 0;
     private boolean quota = false;
     private boolean exporterQuota = false;
     private String identityCardImage;

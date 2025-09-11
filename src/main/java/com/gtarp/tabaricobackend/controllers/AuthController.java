@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -36,7 +37,11 @@ public class AuthController {
 
         UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtService.generateToken(user);
+        String role = user.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        map.put("role", role);
 
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(map);
     }
 }

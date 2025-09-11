@@ -45,6 +45,7 @@ public class JwtService {
         extraClaims.put("username", userDetails.getUsername());
         extraClaims.put("firstName", user.getFirstName());
         extraClaims.put("lastName", user.getLastName());
+        extraClaims.put("role", user.getRole().getName());
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername()) // username = identifiant

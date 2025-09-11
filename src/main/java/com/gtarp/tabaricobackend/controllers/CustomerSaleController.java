@@ -1,7 +1,6 @@
 package com.gtarp.tabaricobackend.controllers;
 
 import com.gtarp.tabaricobackend.dto.accounting.CreateCustomerSaleDto;
-import com.gtarp.tabaricobackend.dto.accounting.CustomerSaleDto;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 import com.gtarp.tabaricobackend.services.CustomerSaleService;
@@ -22,11 +21,6 @@ import java.util.List;
 public class CustomerSaleController {
     @Autowired
     CustomerSaleService customerSaleService;
-
-    @GetMapping("/customersales/current-week")
-    public List<CustomerSaleDto> findAllByUserAndDateBetween(@PathParam("username") String username) {
-        return customerSaleService.findAllByUserForCurrentWeek(username);
-    }
 
     @GetMapping("/customersales")
     public List<CustomerSale> findAllByUser(@PathParam("username") String username) {
