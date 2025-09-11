@@ -10,11 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 public class CustomerDirtySaleRateController {
     @Autowired
     private CrudService<CustomerDirtySaleRate, CustomerDirtySaleRateDto> customerDirtySaleRateService;
+
+    @GetMapping("/customerDirtySaleRates")
+    public List<CustomerDirtySaleRate> getAll() {
+        return customerDirtySaleRateService.getAll();
+    }
 
     @GetMapping("/customerDirtySaleRates/{id}")
     public ResponseEntity<CustomerDirtySaleRate> getCustomerDirtySaleRate(@PathVariable Integer id) {
