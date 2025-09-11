@@ -1,6 +1,7 @@
 package com.gtarp.tabaricobackend.controllers;
 
 import com.gtarp.tabaricobackend.dto.accounting.CreateCustomerSaleDto;
+import com.gtarp.tabaricobackend.dto.accounting.CustomerSaleDto;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 import com.gtarp.tabaricobackend.services.CustomerSaleService;
@@ -23,11 +24,11 @@ public class CustomerSaleController {
     CustomerSaleService customerSaleService;
 
     @GetMapping("/customersales")
-    public List<CustomerSale> findAllByUser(@PathParam("username") String username) {
-        return customerSaleService.findAllByUser(username);
+    public List<CustomerSaleDto> getCustomerSaleListByDate(@PathParam("date") String date) {
+        return customerSaleService.getCustomerSaleDtoListByDate(date);
     }
 
-    @DeleteMapping("/customersale/{id}")
+    @DeleteMapping("/customersales/{id}")
     public void delete(@PathVariable int id) {
         customerSaleService.delete(id);
     }

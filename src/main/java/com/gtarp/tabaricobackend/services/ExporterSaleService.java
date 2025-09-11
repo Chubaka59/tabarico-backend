@@ -15,13 +15,6 @@ public interface ExporterSaleService {
     List<ExporterSaleDto> findAllByUserForCurrentWeek(String username);
 
     /**
-     * find all exporter sales of a user
-     * @param username the user who own the exporter sales
-     * @return a list of exporter sales
-     */
-    List<ExporterSale> findAllByUser(String username);
-
-    /**
      * delete a exporter sale
      * @param id the id of the exporter sale
      */
@@ -34,4 +27,11 @@ public interface ExporterSaleService {
      * @return the exporter sale
      */
     ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username);
+
+    /**
+     * get an exporter list by its date
+     * @param date the date to filter
+     * @return a list of exporter sale
+     */
+    List<ExporterSaleDto> getExporterSalesDtoListByDate(String date);
 }

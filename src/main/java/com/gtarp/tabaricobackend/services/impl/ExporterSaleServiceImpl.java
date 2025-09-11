@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -42,11 +43,6 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
                 .stream()
                 .map(ExporterSaleDto::new)
                 .toList();
-    }
-
-    public List<ExporterSale> findAllByUser(String username) {
-        User user = userService.getByUsername(username);
-        return exporterSaleRepository.findAllByUser(user);
     }
 
     private ExporterSale findById(int id) {
@@ -75,6 +71,14 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
         user.setCleanMoneySalary(user.getCleanMoneySalary() + exporterSale.getCompanyAmount().intValue() * user.getRole().getRedistributionRate() / 100);
         userRepository.save(user);
         return exporterSaleRepository.save(exporterSale);
+    }
+
+    @Override
+    public List<ExporterSaleDto> getExporterSalesDtoListByDate(String date) {
+        return exporterSaleRepository.findAllByDateBetween(LocalDate.parse(date).atStartOfDay(), LocalDate.parse(date).plusDays(1).atStartOfDay())
+                .stream()
+                .map(ExporterSaleDto::new)
+                .collect(Collectors.toList());
     }
 
     private BigDecimal calculateExporterEmployeeAmount(CreateExporterSaleDto createExporterSaleDto) {

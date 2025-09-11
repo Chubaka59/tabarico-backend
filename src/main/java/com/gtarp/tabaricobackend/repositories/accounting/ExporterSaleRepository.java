@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface ExporterSaleRepository extends JpaRepository<ExporterSale, Integer> {
     List<ExporterSale> findAllByUserAndDateBetween(User user, LocalDateTime from, LocalDateTime to);
-    List<ExporterSale> findAllByUser(User user);
+    List<ExporterSale> findAllByDateBetween(LocalDateTime start, LocalDateTime end);
 }

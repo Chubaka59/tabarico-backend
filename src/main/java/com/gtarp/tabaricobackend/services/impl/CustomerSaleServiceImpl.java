@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -62,9 +63,12 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
                 .toList();
     }
 
-    public List<CustomerSale> findAllByUser(String username) {
-        User user = userService.getByUsername(username);
-        return customerSaleRepository.findAllByUser(user);
+    @Override
+    public List<CustomerSaleDto> getCustomerSaleDtoListByDate(String date) {
+        return customerSaleRepository.findAllByDateBetween(LocalDate.parse(date).atStartOfDay(), LocalDate.parse(date).plusDays(1).atStartOfDay())
+                .stream()
+                .map(CustomerSaleDto::new)
+                .collect(Collectors.toList());
     }
 
     private CustomerSale findById(int id) {

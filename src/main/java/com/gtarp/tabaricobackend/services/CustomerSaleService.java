@@ -16,17 +16,10 @@ public interface CustomerSaleService {
     List<CustomerSaleDto> findAllByUserForCurrentWeek(String username);
 
     /**
-     * find all customer sales of a user
-     * @param username the user who own the customer sales
-     * @return a list of customer sales
-     */
-    List<CustomerSale> findAllByUser(String username);
-
-    /**
      * delete a customer sale
      * @param id the id of the customer sale
      */
-    public void delete(int id);
+    void delete(int id);
 
     /**
      * get all type of sales
@@ -41,4 +34,11 @@ public interface CustomerSaleService {
      * @return the customer sale
      */
     CustomerSale insert(CreateCustomerSaleDto createCustomerSaleDto, String username);
+
+    /**
+     * get a list of customer sales by its date
+     * @param date the date to filter
+     * @return a list of customer sales dto
+     */
+    List<CustomerSaleDto> getCustomerSaleDtoListByDate(String date);
 }

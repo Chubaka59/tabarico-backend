@@ -22,14 +22,9 @@ public class ExporterSaleController {
     @Autowired
     ExporterSaleService exporterSaleService;
 
-    @GetMapping("/exportersales/current-week")
-    public List<ExporterSaleDto> findAllByUserAndDateBetween(@PathParam("username") String username) {
-        return exporterSaleService.findAllByUserForCurrentWeek(username);
-    }
-
     @GetMapping("/exportersales")
-    public List<ExporterSale> findAllByUser(@PathParam("username") String username) {
-        return exporterSaleService.findAllByUser(username);
+    public List<ExporterSaleDto> getExporterSaleListByDate(@PathParam("date") String date) {
+        return exporterSaleService.getExporterSalesDtoListByDate(date);
     }
 
     @DeleteMapping("/exportersales/{id}")
