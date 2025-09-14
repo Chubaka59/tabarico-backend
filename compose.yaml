@@ -1,1 +1,51 @@
+version: "3.9"
+
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}" ] # Vérifie la connexion avec l'utilisateur root
+      interval: 5s     # Vérifie toutes les 5 secondes
+      timeout: 20s     # Laisse 20 secondes pour la réponse
+      retries: 10      # 10 tentatives (soit 50s après la start_period)
+
+
+  backend:
+    build: ./backend
+    container_name: tabarico_backend
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/tabarico?serverTimeZone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - frontend
+      - backend
+
+  frontend:
+    build: ./frontend
+    container_name: tabarico_frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - frontend
+
+volumes:
+  mysql_data:
+
+networks:
+  backend:
+    internal: true   # interne, pas exposé à l'extérieur
+  frontend:
+    external: false  # accessible depuis host pour Angular
