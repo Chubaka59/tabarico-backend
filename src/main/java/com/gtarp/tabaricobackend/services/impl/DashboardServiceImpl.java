@@ -9,6 +9,7 @@ import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.CustomerSaleRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
 import com.gtarp.tabaricobackend.services.CustomerSaleService;
@@ -18,10 +19,8 @@ import com.gtarp.tabaricobackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +40,8 @@ public class DashboardServiceImpl implements DashboardService {
     private ExporterSaleRepository exporterSaleRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AccountingRebootDateRepository accountingRebootDateRepository;
 
     public PersonalDashboardDto getPersonalDashboardDto(String username) {
         User user = userService.getByUsername(username);
@@ -51,9 +52,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardDto> getDashboardDto() {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).atTime(4, 0, 0, 0);
-        LocalDateTime endOfWeek = startOfWeek.plusWeeks(1).withHour(3).withMinute(59).withSecond(59).withNano(999999999);
+        LocalDateTime lastRebootDate = accountingRebootDateRepository.findAll().getFirst().getAccountingRebootDate();
 
         List<DashboardDto> dashboardDtoList = new ArrayList<>();
 
@@ -64,13 +63,13 @@ public class DashboardServiceImpl implements DashboardService {
             dashboardDto.setUsername(user.getUsername());
 
             //On recupere toutes les ventes client pour le user et on groupe par type de vente
-            List<CustomerSale> customerSaleList = customerSaleRepository.findAllByUserAndDateBetween(user, startOfWeek, endOfWeek);
+            List<CustomerSale> customerSaleList = customerSaleRepository.findAllByUserAndDateAfter(user, lastRebootDate);
             Map<TypeOfSale, Integer> salesByType = getCustomerSalesByTypeOfSales(customerSaleList);
             dashboardDto.setCleanMoneyCustomerSales(salesByType.get(TypeOfSale.cleanMoney) != null ? salesByType.get(TypeOfSale.cleanMoney) : 0);
             dashboardDto.setDirtyMoneyCustomerSales(salesByType.get(TypeOfSale.dirtyMoney) != null ? salesByType.get(TypeOfSale.cleanMoney) : 0);
 
             //On fait la somme de toutes les ventes exportateurs
-            List<ExporterSale> exporterSaleList = exporterSaleRepository.findAllByUserAndDateBetween(user, startOfWeek, endOfWeek);
+            List<ExporterSale> exporterSaleList = exporterSaleRepository.findAllByUserAndDateAfter(user, lastRebootDate);
             dashboardDto.setEnterpriseAmountExporterSales(getExporterSalesMoney(exporterSaleList));
             dashboardDto.setQuantityExporterSales(getExporterSalesQuantity(exporterSaleList));
 

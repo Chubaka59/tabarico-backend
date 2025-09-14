@@ -2,12 +2,15 @@ package com.gtarp.tabaricobackend.services.impl;
 
 import com.gtarp.tabaricobackend.dto.UserDto;
 import com.gtarp.tabaricobackend.entities.User;
+import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootDate;
 import com.gtarp.tabaricobackend.exception.*;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
 import com.gtarp.tabaricobackend.services.AbstractCrudService;
 import com.gtarp.tabaricobackend.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +33,9 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
     public UserServiceImpl(UserRepository repository){
         super(repository);
     }
+
+    @Autowired
+    private AccountingRebootDateRepository accountingRebootDateRepository;
 
     @Override
     public User getById(Integer id) {
@@ -112,6 +119,9 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
 
     @Transactional
     public void resetWeeklyUserAccounting() {
+        AccountingRebootDate accountingRebootDate = accountingRebootDateRepository.findAll().get(0);
+        accountingRebootDate.setAccountingRebootDate(LocalDateTime.now());
+        accountingRebootDateRepository.save(accountingRebootDate);
         List<User> userList = repository.findAll();
         for (User user : userList) {
             if (user.isQuota() && user.isExporterQuota()) {

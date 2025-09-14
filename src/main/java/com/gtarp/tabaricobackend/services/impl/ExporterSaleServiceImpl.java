@@ -6,6 +6,7 @@ import com.gtarp.tabaricobackend.entities.User;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.exception.ExporterSaleNotFoundException;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
 import com.gtarp.tabaricobackend.services.ExporterSaleService;
 import com.gtarp.tabaricobackend.services.UserService;
@@ -15,10 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,15 +30,15 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AccountingRebootDateRepository accountingRebootDateRepository;
 
     public List<ExporterSaleDto> findAllByUserForCurrentWeek(String username) {
         User user = userService.getByUsername(username);
 
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).atTime(4, 0, 0, 0);
-        LocalDateTime endOfWeek = startOfWeek.plusWeeks(1).withHour(3).withMinute(59).withSecond(59).withNano(999999999);
+        LocalDateTime lastRebootTime = accountingRebootDateRepository.findAll().getFirst().getAccountingRebootDate();
 
-        return exporterSaleRepository.findAllByUserAndDateBetween(user, startOfWeek, endOfWeek)
+        return exporterSaleRepository.findAllByUserAndDateAfter(user, lastRebootTime)
                 .stream()
                 .map(ExporterSaleDto::new)
                 .toList();
