@@ -73,7 +73,12 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     @Transactional
     @Override
     public ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username) {
-        User user = userService.getByUsername(username);
+        User user;
+        if (createExporterSaleDto.getUserId() != null) {
+            user = userService.getById(createExporterSaleDto.getUserId());
+        } else {
+            user = userService.getByUsername(username);
+        }
         ExporterSale exporterSale = new ExporterSale();
         exporterSale.setDate(LocalDateTime.now());
         exporterSale.setLevel(createExporterSaleDto.getLevel() > 100 ? 100 : createExporterSaleDto.getLevel() );

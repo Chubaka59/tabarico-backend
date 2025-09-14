@@ -35,6 +35,9 @@ public class ExporterSaleController {
     @PostMapping("/exportersales")
     public ResponseEntity<ExporterSale> insert(@RequestBody CreateExporterSaleDto createExporterSaleDto, Authentication authentication) {
         try {
+            if (authentication.getAuthorities().stream().noneMatch(auth -> auth.getAuthority().contains("Patron")) && createExporterSaleDto.getUserId() != null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             String username = authentication.getName();
             exporterSaleService.insert(createExporterSaleDto, username);
             URI location = ServletUriComponentsBuilder

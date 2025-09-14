@@ -98,7 +98,12 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
 
     @Transactional
     public CustomerSale insert(CreateCustomerSaleDto createCustomerSaleDto, String username) {
-        User user = userService.getByUsername(username);
+        User user;
+        if (createCustomerSaleDto.getUserId() != null) {
+            user = userService.getById(createCustomerSaleDto.getUserId());
+        } else {
+            user = userService.getByUsername(username);
+        }
         Product product = productService.getById(createCustomerSaleDto.getProduct());
         CustomerSale customerSale = new CustomerSale();
         customerSale.setDate(LocalDateTime.now());

@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class CreateCustomerSaleDto {
+    private Integer userId;
     private Integer product;
     private TypeOfSale typeOfSale;
     private Integer contract;

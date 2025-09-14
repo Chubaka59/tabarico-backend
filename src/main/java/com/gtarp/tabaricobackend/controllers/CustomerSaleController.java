@@ -41,6 +41,9 @@ public class CustomerSaleController {
     @PostMapping("/customersales")
     public ResponseEntity<CustomerSale> create(@RequestBody CreateCustomerSaleDto createCustomerSaleDto, Authentication authentication) {
         try {
+            if (authentication.getAuthorities().stream().noneMatch(auth -> auth.getAuthority().contains("Patron")) && createCustomerSaleDto.getUserId() != null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             String username = authentication.getName();
             customerSaleService.insert(createCustomerSaleDto, username);
             URI location = ServletUriComponentsBuilder
