@@ -50,7 +50,24 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
 
     public void delete(int id) {
         ExporterSale exporterSale = findById(id);
+        User user = userService.getByUsername(exporterSale.getUser().getUsername());
+
+        //On retire manuellement la vente du user afin de pouvoir le save apres la suppression
+        user.getExporterSales().remove(exporterSale);
         exporterSaleRepository.delete(exporterSale);
+
+        //Apres avoir supprimer, on retire la prime et on décoche la quota si il n'est plus fait
+        user.setCleanMoneySalary(user.getCleanMoneySalary() - (exporterSale.getCompanyAmount().intValue() * user.getRole().getRedistributionRate() / 100));
+
+        boolean before = user.isQuota() && user.isExporterQuota();
+        if (user.getExporterSales().stream().mapToInt(ExporterSale::getQuantity).sum() < 500) {
+            user.setExporterQuota(false);
+            boolean after = user.isQuota() && user.isExporterQuota();
+            if (before && !after) {
+                user.setCleanMoneySalary(user.getCleanMoneySalary() - user.getRole().getSalary());
+            }
+        }
+        userRepository.save(user);
     }
 
     @Transactional
@@ -65,6 +82,17 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
         exporterSale.setEmployeeAmount(calculateExporterEmployeeAmount(createExporterSaleDto));
         //le montant employé * 0.3 pour obtenir le montant entreprise
         exporterSale.setCompanyAmount(exporterSale.getEmployeeAmount().multiply(BigDecimal.valueOf(0.3)).setScale(0, RoundingMode.HALF_UP));
+
+        boolean before = user.isQuota() && user.isExporterQuota();
+        if (user.getExporterSales().stream().mapToInt(ExporterSale::getQuantity).sum() < 500 && exporterSale.getQuantity() + user.getExporterSales().stream().mapToInt(ExporterSale::getQuantity).sum() >= 500) {
+            user.setExporterQuota(true);
+            if (user.isQuota()) {
+                boolean after = user.isQuota() && user.isExporterQuota();
+                if (!before && after) {
+                    user.setCleanMoneySalary(user.getCleanMoneySalary() + user.getRole().getSalary());
+                }
+            }
+        }
 
         //On ajoute la prime au salaire de l'employé
         user.setCleanMoneySalary(user.getCleanMoneySalary() + exporterSale.getCompanyAmount().intValue() * user.getRole().getRedistributionRate() / 100);

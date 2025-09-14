@@ -76,7 +76,20 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
 
     public void delete(int id) {
         CustomerSale customerSale = findById(id);
+        User user = userService.getByUsername(customerSale.getUser().getUsername());
+
+        //On retire manuellement la vente du user afin de pouvoir le save apres la suppression
+        user.getCustomerSales().remove(customerSale);
         customerSaleRepository.delete(customerSale);
+
+        //Apres avoir supprimer, on retire la prime
+        if(customerSale.getTypeOfSale().equals(TypeOfSale.cleanMoney)) {
+            user.setCleanMoneySalary(user.getCleanMoneySalary() - customerSale.getAmount().intValue() * user.getRole().getRedistributionRate() / 100);
+        } else {
+            user.setDirtyMoneySalary(user.getDirtyMoneySalary() - customerSale.getAmount().intValue() * customerDirtySaleRateService.getById(1).getCustomerDirtySaleRate() / 100);
+        }
+
+        userRepository.save(user);
     }
 
     public TypeOfSale[] getTypeOfSales() {
