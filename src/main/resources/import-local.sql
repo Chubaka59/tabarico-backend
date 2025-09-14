@@ -1,3 +1,4 @@
+insert into role(name, redistribution_rate, salary) values ('Patron', 40, 40000)
 insert into role(name, redistribution_rate, salary) values ('Responsable', 40, 40000)
 insert into role(name, redistribution_rate, salary) values ('CDI', 40, 30000)
 insert into role(name, redistribution_rate, salary) values ('CDD', 30, 30000)

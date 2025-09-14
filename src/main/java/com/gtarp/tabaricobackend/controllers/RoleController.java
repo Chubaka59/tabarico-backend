@@ -51,17 +51,6 @@ public class RoleController {
         }
     }
 
-    @DeleteMapping("/roles/{id}")
-    public ResponseEntity<Role> delete(@PathVariable Integer id) {
-        try {
-            roleService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PutMapping("/roles/{id}")
     public ResponseEntity<Role> update(@RequestBody @Validated RoleDto roleDto, @PathVariable Integer id) {
         try {
