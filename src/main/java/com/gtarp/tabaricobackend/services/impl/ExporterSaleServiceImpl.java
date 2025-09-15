@@ -7,7 +7,7 @@ import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.exception.ExporterSaleNotFoundException;
 import com.gtarp.tabaricobackend.exception.SalesLockedException;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
-import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
 import com.gtarp.tabaricobackend.services.ExporterSaleService;
 import com.gtarp.tabaricobackend.services.UserService;
@@ -32,12 +32,12 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private AccountingRebootDateRepository accountingRebootDateRepository;
+    private AccountingRebootInformationRepository accountingRebootInformationRepository;
 
     public List<ExporterSaleDto> findAllByUserForCurrentWeek(String username) {
         User user = userService.getByUsername(username);
 
-        LocalDateTime lastRebootTime = accountingRebootDateRepository.findAll().getFirst().getAccountingRebootDate();
+        LocalDateTime lastRebootTime = accountingRebootInformationRepository.findAll().getFirst().getAccountingRebootDate();
 
         return exporterSaleRepository.findAllByUserAndDateAfter(user, lastRebootTime)
                 .stream()
@@ -50,7 +50,7 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     }
 
     public void delete(int id) {
-        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+        if (accountingRebootInformationRepository.findAll().getFirst().isSalesLocked()) {
             throw new SalesLockedException();
         }
         ExporterSale exporterSale = findById(id);
@@ -77,7 +77,7 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     @Transactional
     @Override
     public ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username) {
-        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+        if (accountingRebootInformationRepository.findAll().getFirst().isSalesLocked()) {
             throw new SalesLockedException();
         }
         User user;

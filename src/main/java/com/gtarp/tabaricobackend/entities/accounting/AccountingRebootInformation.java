@@ -12,10 +12,13 @@ import java.time.LocalDateTime;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountingRebootDate {
+public class AccountingRebootInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private LocalDateTime accountingRebootDate;
     private boolean salesLocked;
+    private Integer top1Reward;
+    private Integer top2Reward;
+    private Integer top3Reward;
 }

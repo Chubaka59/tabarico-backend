@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ExporterSaleRepository extends JpaRepository<ExporterSale, Integer> {
-    List<ExporterSale> findAllByUserAndDateBetween(User user, LocalDateTime from, LocalDateTime to);
     List<ExporterSale> findAllByDateBetween(LocalDateTime start, LocalDateTime end);
     List<ExporterSale> findAllByUserAndDateAfter(User user, LocalDateTime to);
+    List<ExporterSale> findAllByDateAfter(LocalDateTime to);
 }

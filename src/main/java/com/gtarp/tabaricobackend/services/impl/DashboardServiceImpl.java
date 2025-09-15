@@ -1,16 +1,13 @@
 package com.gtarp.tabaricobackend.services.impl;
 
-import com.gtarp.tabaricobackend.dto.accounting.CustomerSaleDto;
-import com.gtarp.tabaricobackend.dto.accounting.DashboardDto;
-import com.gtarp.tabaricobackend.dto.accounting.ExporterSaleDto;
-import com.gtarp.tabaricobackend.dto.accounting.PersonalDashboardDto;
+import com.gtarp.tabaricobackend.dto.accounting.*;
 import com.gtarp.tabaricobackend.entities.User;
-import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootDate;
+import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootInformation;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
-import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.CustomerSaleRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
 import com.gtarp.tabaricobackend.services.CustomerSaleService;
@@ -42,18 +39,22 @@ public class DashboardServiceImpl implements DashboardService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private AccountingRebootDateRepository accountingRebootDateRepository;
+    private AccountingRebootInformationRepository accountingRebootInformationRepository;
 
     public PersonalDashboardDto getPersonalDashboardDto(String username) {
         User user = userService.getByUsername(username);
         List<CustomerSaleDto> customerSaleDtoList = customerSaleService.findAllByUserForCurrentWeek(username);
         List<ExporterSaleDto> exporterSaleDtoList = exporterSaleService.findAllByUserForCurrentWeek(username);
-        return new PersonalDashboardDto(user, customerSaleDtoList, exporterSaleDtoList);
+
+        LocalDateTime lastRebootDate = accountingRebootInformationRepository.findAll().getFirst().getAccountingRebootDate();
+        List<TopSellerDto> topSellerDtoList = getTopSellers(lastRebootDate);
+
+        return new PersonalDashboardDto(user, customerSaleDtoList, exporterSaleDtoList, topSellerDtoList);
     }
 
     @Override
     public List<DashboardDto> getDashboardDto() {
-        LocalDateTime lastRebootDate = accountingRebootDateRepository.findAll().getFirst().getAccountingRebootDate();
+        LocalDateTime lastRebootDate = accountingRebootInformationRepository.findAll().getFirst().getAccountingRebootDate();
 
         List<DashboardDto> dashboardDtoList = new ArrayList<>();
 
@@ -120,14 +121,14 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public void setSalesBlocked(boolean blocked) {
-        AccountingRebootDate accountingRebootDate = accountingRebootDateRepository.findAll().getFirst();
-        accountingRebootDate.setSalesLocked(blocked);
-        accountingRebootDateRepository.save(accountingRebootDate);
+        AccountingRebootInformation accountingRebootInformation = accountingRebootInformationRepository.findAll().getFirst();
+        accountingRebootInformation.setSalesLocked(blocked);
+        accountingRebootInformationRepository.save(accountingRebootInformation);
     }
 
     @Override
     public boolean getSalesBlocked() {
-        return accountingRebootDateRepository.findAll().getFirst().isSalesLocked();
+        return accountingRebootInformationRepository.findAll().getFirst().isSalesLocked();
     }
 
     private static Map<TypeOfSale, Integer> getCustomerSalesByTypeOfSales(List<CustomerSale> customerSaleList) {
@@ -145,5 +146,38 @@ public class DashboardServiceImpl implements DashboardService {
         return exporterSaleList.stream()
                 .mapToInt(exporterSale -> exporterSale.getCompanyAmount().intValueExact())
                 .sum();
+    }
+
+    private List<TopSellerDto> getTopSellers(LocalDateTime lastRebootDate) {
+        int[] rewards = {
+                accountingRebootInformationRepository.findAll().getFirst().getTop1Reward(),
+                accountingRebootInformationRepository.findAll().getFirst().getTop2Reward(),
+                accountingRebootInformationRepository.findAll().getFirst().getTop3Reward()
+        };
+
+        // Récupère toutes les ventes depuis le dernier reboot
+        List<ExporterSale> sales = exporterSaleRepository.findAllByDateAfter(lastRebootDate);
+
+        List<Map.Entry<String, Integer>> top3 = sales.stream()
+                .collect(Collectors.groupingBy(
+                        sale -> sale.getUser().getFirstName() + " " + sale.getUser().getLastName(),
+                        Collectors.summingInt(ExporterSale::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(3)
+                .toList();
+
+        List<TopSellerDto> result = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            if (i < top3.size()) {
+                Map.Entry<String, Integer> entry = top3.get(i);
+                result.add(new TopSellerDto(entry.getKey(), entry.getValue(), rewards[i]));
+            } else {
+                // Pas de vendeur pour cette position
+                result.add(new TopSellerDto("—", 0, rewards[i]));
+            }
+        }
+        return result;
     }
 }

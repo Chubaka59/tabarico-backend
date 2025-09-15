@@ -26,4 +26,4 @@ insert into stock(date, type_of_stock_movement, product_id, quantity_mouvement, 
 
 insert into customer_dirty_sale_rate(id, customer_dirty_sale_rate) values (1, 35)
 
-insert into accounting_reboot_date(accounting_reboot_date, sales_locked) values ('2025-09-12 00:00:00', false)
+insert into accounting_reboot_information(accounting_reboot_date, sales_locked, top1Reward, top2Reward, top3Reward) values ('2025-09-12 00:00:00', false, 20000, 15000, 10000)

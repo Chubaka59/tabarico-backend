@@ -14,7 +14,7 @@ import com.gtarp.tabaricobackend.exception.SalesLockedException;
 import com.gtarp.tabaricobackend.repositories.ProductRepository;
 import com.gtarp.tabaricobackend.repositories.StockRepository;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
-import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.CustomerSaleRepository;
 import com.gtarp.tabaricobackend.services.CrudService;
 import com.gtarp.tabaricobackend.services.CustomerSaleService;
@@ -50,12 +50,12 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
     @Autowired
     private StockRepository stockRepository;
     @Autowired
-    private AccountingRebootDateRepository accountingRebootDateRepository;
+    private AccountingRebootInformationRepository accountingRebootInformationRepository;
 
     public List<CustomerSaleDto> findAllByUserForCurrentWeek(String username) {
         User user = userService.getByUsername(username);
 
-        LocalDateTime lastRebootDate = accountingRebootDateRepository.findAll().getFirst().getAccountingRebootDate();
+        LocalDateTime lastRebootDate = accountingRebootInformationRepository.findAll().getFirst().getAccountingRebootDate();
 
         return customerSaleRepository.findAllByUserAndDateAfter(user, lastRebootDate)
                 .stream()
@@ -76,7 +76,7 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
     }
 
     public void delete(int id) {
-        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+        if (accountingRebootInformationRepository.findAll().getFirst().isSalesLocked()) {
             throw new SalesLockedException();
         }
         CustomerSale customerSale = findById(id);
@@ -102,7 +102,7 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
 
     @Transactional
     public CustomerSale insert(CreateCustomerSaleDto createCustomerSaleDto, String username) {
-        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+        if (accountingRebootInformationRepository.findAll().getFirst().isSalesLocked()) {
             throw new SalesLockedException();
         }
         User user;

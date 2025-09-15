@@ -19,8 +19,9 @@ public class PersonalDashboardDto {
     private boolean exporterQuota;
     private List<CustomerSaleDto> customerSaleDtoList;
     private List<ExporterSaleDto> exporterSaleDtoList;
+    private List<TopSellerDto> topSellers;
 
-    public PersonalDashboardDto(User user, List<CustomerSaleDto> customerSaleDtoList, List<ExporterSaleDto> exporterSaleDtoList) {
+    public PersonalDashboardDto(User user, List<CustomerSaleDto> customerSaleDtoList, List<ExporterSaleDto> exporterSaleDtoList, List<TopSellerDto> topSellerDtoList) {
         if (user.isQuota() && user.isExporterQuota()) {
             cleanMoneySalary = user.getCleanMoneySalary();
             dirtyMoneySalary = user.getDirtyMoneySalary();
@@ -34,5 +35,6 @@ public class PersonalDashboardDto {
         exporterQuota = user.isExporterQuota();
         this.customerSaleDtoList = customerSaleDtoList;
         this.exporterSaleDtoList = exporterSaleDtoList;
+        this.topSellers = topSellerDtoList;
     }
 }

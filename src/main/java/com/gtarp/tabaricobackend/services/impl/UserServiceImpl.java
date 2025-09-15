@@ -2,10 +2,10 @@ package com.gtarp.tabaricobackend.services.impl;
 
 import com.gtarp.tabaricobackend.dto.UserDto;
 import com.gtarp.tabaricobackend.entities.User;
-import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootDate;
+import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootInformation;
 import com.gtarp.tabaricobackend.exception.*;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
-import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
 import com.gtarp.tabaricobackend.services.AbstractCrudService;
 import com.gtarp.tabaricobackend.services.UserService;
 import jakarta.transaction.Transactional;
@@ -35,7 +35,7 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
     }
 
     @Autowired
-    private AccountingRebootDateRepository accountingRebootDateRepository;
+    private AccountingRebootInformationRepository accountingRebootInformationRepository;
 
     @Override
     public User getById(Integer id) {
@@ -119,9 +119,9 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
 
     @Transactional
     public void resetWeeklyUserAccounting() {
-        AccountingRebootDate accountingRebootDate = accountingRebootDateRepository.findAll().get(0);
-        accountingRebootDate.setAccountingRebootDate(LocalDateTime.now());
-        accountingRebootDateRepository.save(accountingRebootDate);
+        AccountingRebootInformation accountingRebootInformation = accountingRebootInformationRepository.findAll().get(0);
+        accountingRebootInformation.setAccountingRebootDate(LocalDateTime.now());
+        accountingRebootInformationRepository.save(accountingRebootInformation);
         List<User> userList = repository.findAll();
         for (User user : userList) {
             if (user.isQuota() && user.isExporterQuota()) {
