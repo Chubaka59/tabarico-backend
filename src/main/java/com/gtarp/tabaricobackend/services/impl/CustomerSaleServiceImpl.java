@@ -10,6 +10,7 @@ import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
 import com.gtarp.tabaricobackend.exception.CustomerSaleInformationErrorException;
 import com.gtarp.tabaricobackend.exception.CustomerSaleNotFoundException;
+import com.gtarp.tabaricobackend.exception.SalesLockedException;
 import com.gtarp.tabaricobackend.repositories.ProductRepository;
 import com.gtarp.tabaricobackend.repositories.StockRepository;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
@@ -75,6 +76,9 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
     }
 
     public void delete(int id) {
+        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+            throw new SalesLockedException();
+        }
         CustomerSale customerSale = findById(id);
         User user = userService.getByUsername(customerSale.getUser().getUsername());
 
@@ -98,6 +102,9 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
 
     @Transactional
     public CustomerSale insert(CreateCustomerSaleDto createCustomerSaleDto, String username) {
+        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+            throw new SalesLockedException();
+        }
         User user;
         if (createCustomerSaleDto.getUserId() != null) {
             user = userService.getById(createCustomerSaleDto.getUserId());

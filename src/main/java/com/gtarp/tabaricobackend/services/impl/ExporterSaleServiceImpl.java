@@ -5,6 +5,7 @@ import com.gtarp.tabaricobackend.dto.accounting.ExporterSaleDto;
 import com.gtarp.tabaricobackend.entities.User;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.exception.ExporterSaleNotFoundException;
+import com.gtarp.tabaricobackend.exception.SalesLockedException;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootDateRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
@@ -49,6 +50,9 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     }
 
     public void delete(int id) {
+        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+            throw new SalesLockedException();
+        }
         ExporterSale exporterSale = findById(id);
         User user = userService.getByUsername(exporterSale.getUser().getUsername());
 
@@ -73,6 +77,9 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
     @Transactional
     @Override
     public ExporterSale insert(CreateExporterSaleDto createExporterSaleDto, String username) {
+        if (accountingRebootDateRepository.findAll().getFirst().isSalesLocked()) {
+            throw new SalesLockedException();
+        }
         User user;
         if (createExporterSaleDto.getUserId() != null) {
             user = userService.getById(createExporterSaleDto.getUserId());

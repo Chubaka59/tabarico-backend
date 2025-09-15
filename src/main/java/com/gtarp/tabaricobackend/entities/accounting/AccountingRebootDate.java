@@ -16,5 +16,6 @@ public class AccountingRebootDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    LocalDateTime accountingRebootDate;
+    private LocalDateTime accountingRebootDate;
+    private boolean salesLocked;
 }

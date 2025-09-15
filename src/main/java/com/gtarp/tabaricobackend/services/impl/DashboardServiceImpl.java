@@ -5,6 +5,7 @@ import com.gtarp.tabaricobackend.dto.accounting.DashboardDto;
 import com.gtarp.tabaricobackend.dto.accounting.ExporterSaleDto;
 import com.gtarp.tabaricobackend.dto.accounting.PersonalDashboardDto;
 import com.gtarp.tabaricobackend.entities.User;
+import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootDate;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.entities.accounting.TypeOfSale;
@@ -115,6 +116,18 @@ public class DashboardServiceImpl implements DashboardService {
             user.setCleanMoneySalary(user.getCleanMoneySalary() - user.getRole().getSalary());
         }
         userRepository.save(user);
+    }
+
+    @Override
+    public void setSalesBlocked(boolean blocked) {
+        AccountingRebootDate accountingRebootDate = accountingRebootDateRepository.findAll().getFirst();
+        accountingRebootDate.setSalesLocked(blocked);
+        accountingRebootDateRepository.save(accountingRebootDate);
+    }
+
+    @Override
+    public boolean getSalesBlocked() {
+        return accountingRebootDateRepository.findAll().getFirst().isSalesLocked();
     }
 
     private static Map<TypeOfSale, Integer> getCustomerSalesByTypeOfSales(List<CustomerSale> customerSaleList) {

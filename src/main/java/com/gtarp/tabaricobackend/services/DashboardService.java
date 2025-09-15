@@ -25,4 +25,16 @@ public interface DashboardService {
      * @param dashboardDto the information to update
      */
     void updateUser(String username, DashboardDto dashboardDto);
+
+    /**
+     * set the blocked status to block the sales
+     * @param blocked is the sales blocked
+     */
+    void setSalesBlocked(boolean blocked);
+
+    /**
+     * get the value if the sales are locked
+     * @return is the sales locked
+     */
+    boolean getSalesBlocked();
 }

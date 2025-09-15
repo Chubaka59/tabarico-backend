@@ -39,4 +39,20 @@ public class DashboardController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/dashboard/sales-block")
+    public ResponseEntity<Void> setSalesBlocked(@RequestParam boolean blocked) {
+        try {
+            dashboardService.setSalesBlocked(blocked);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/dashboard/sales-block")
+    public boolean getSalesBlocked() {
+        return dashboardService.getSalesBlocked();
+    }
 }
