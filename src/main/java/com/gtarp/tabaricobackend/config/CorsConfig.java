@@ -14,9 +14,12 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://tabarico.ddns.net/")
-                        .allowedOrigins("http://51.68.224.121/")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins(
+                                "http://tabarico.ddns.net/",
+                                "http://51.68.224.121/"
+                                //,
+                                //"http://localhost:4200"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
