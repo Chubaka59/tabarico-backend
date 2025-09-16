@@ -17,8 +17,8 @@ public class CorsConfig {
                         .allowedOrigins(
                                 "http://tabarico.ddns.net/",
                                 "http://51.68.224.121/"
-                                //,
-                                //"http://localhost:4200"
+                                ,
+                                "http://localhost:4200"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")

@@ -3,9 +3,11 @@ package com.gtarp.tabaricobackend.services.impl;
 import com.gtarp.tabaricobackend.dto.UserDto;
 import com.gtarp.tabaricobackend.entities.User;
 import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootInformation;
+import com.gtarp.tabaricobackend.entities.accounting.ExporterSale;
 import com.gtarp.tabaricobackend.exception.*;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
 import com.gtarp.tabaricobackend.services.AbstractCrudService;
 import com.gtarp.tabaricobackend.services.UserService;
 import jakarta.transaction.Transactional;
@@ -21,9 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,6 +37,8 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
 
     @Autowired
     private AccountingRebootInformationRepository accountingRebootInformationRepository;
+    @Autowired
+    private ExporterSaleRepository exporterSaleRepository;
 
     @Override
     public User getById(Integer id) {
@@ -119,13 +122,41 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
 
     @Transactional
     public void resetWeeklyUserAccounting() {
-        AccountingRebootInformation accountingRebootInformation = accountingRebootInformationRepository.findAll().get(0);
+        AccountingRebootInformation accountingRebootInformation = accountingRebootInformationRepository.findAll().getFirst();
+
+        //Calcule des 3 meilleurs vendeurs
+        List<ExporterSale> sales = exporterSaleRepository.findAllByDateAfter(accountingRebootInformation.getAccountingRebootDate());
+        List<Map.Entry<User, Integer>> top3 = sales.stream()
+                .collect(Collectors.groupingBy(
+                        ExporterSale::getUser,
+                        Collectors.summingInt(ExporterSale::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<User, Integer>comparingByValue().reversed())
+                .limit(3)
+                .toList();
+
+        // ⚡️ Récompenses configurées en BDD
+        int[] rewards = {
+                accountingRebootInformation.getTop1Reward(),
+                accountingRebootInformation.getTop2Reward(),
+                accountingRebootInformation.getTop3Reward()
+        };
+
+        // ⚡️ On mappe le top3 dans une Map<User, reward>
+        Map<Integer, Integer> userRewards = new HashMap<>();
+        for (int i = 0; i < top3.size(); i++) {
+            userRewards.put(top3.get(i).getKey().getId(), rewards[i]);
+        }
+
         accountingRebootInformation.setAccountingRebootDate(LocalDateTime.now());
         accountingRebootInformationRepository.save(accountingRebootInformation);
         List<User> userList = repository.findAll();
+
         for (User user : userList) {
             if (user.isQuota() && user.isExporterQuota()) {
-                user.setCleanMoneySalaryPreviousWeek(user.getCleanMoneySalary());
+                int bonus = userRewards.getOrDefault(user.getId(), 0);
+                user.setCleanMoneySalaryPreviousWeek(user.getCleanMoneySalary() + bonus);
                 user.setDirtyMoneySalaryPreviousWeek(user.getDirtyMoneySalary());
             } else {
                 user.setCleanMoneySalaryPreviousWeek(0);
