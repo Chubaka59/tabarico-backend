@@ -37,11 +37,32 @@ public class AuthController {
 
         UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
         String role = user.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
         Map<String, String> map = new HashMap<>();
         map.put("token", token);
+        map.put("refreshToken", refreshToken);
         map.put("role", role);
 
         return ResponseEntity.ok(map);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, String>> refresh(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        String username = jwtService.extractUsername(refreshToken);
+
+        // ⚡ Vérifie si refreshToken est encore valide
+        if (!jwtService.isTokenExpired(refreshToken)) {
+            UserDetails user = userDetailsService.loadUserByUsername(username);
+            String newAccessToken = jwtService.generateToken(user);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("token", newAccessToken);
+            response.put("refreshToken", refreshToken); // on renvoie le même refresh tant qu’il est valide
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(401).body(Map.of("error", "Refresh token expired"));
+        }
     }
 }
