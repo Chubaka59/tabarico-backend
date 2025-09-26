@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RewardDto {
+    private Integer id;
     private String position;
-    private Integer amount;
+    private Integer rewardAmount;
 }

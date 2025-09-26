@@ -10,6 +10,7 @@ import com.gtarp.tabaricobackend.repositories.UserRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.CustomerSaleRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.RewardRepository;
 import com.gtarp.tabaricobackend.services.CustomerSaleService;
 import com.gtarp.tabaricobackend.services.DashboardService;
 import com.gtarp.tabaricobackend.services.ExporterSaleService;
@@ -40,6 +41,8 @@ public class DashboardServiceImpl implements DashboardService {
     private UserRepository userRepository;
     @Autowired
     private AccountingRebootInformationRepository accountingRebootInformationRepository;
+    @Autowired
+    private RewardRepository rewardRepository;
 
     public PersonalDashboardDto getPersonalDashboardDto(String username) {
         User user = userService.getByUsername(username);
@@ -150,9 +153,9 @@ public class DashboardServiceImpl implements DashboardService {
 
     private List<TopSellerDto> getTopSellers(LocalDateTime lastRebootDate) {
         int[] rewards = {
-                accountingRebootInformationRepository.findAll().getFirst().getTop1Reward(),
-                accountingRebootInformationRepository.findAll().getFirst().getTop2Reward(),
-                accountingRebootInformationRepository.findAll().getFirst().getTop3Reward()
+                rewardRepository.findAll().get(0).getRewardAmount(),
+                rewardRepository.findAll().get(1).getRewardAmount(),
+                rewardRepository.findAll().get(2).getRewardAmount()
         };
 
         // Récupère toutes les ventes depuis le dernier reboot

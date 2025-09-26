@@ -81,6 +81,7 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
         }
         CustomerSale customerSale = findById(id);
         User user = userService.getByUsername(customerSale.getUser().getUsername());
+        Product product = productService.getById(customerSale.getProduct().getId());
 
         //On retire manuellement la vente du user afin de pouvoir le save apres la suppression
         user.getCustomerSales().remove(customerSale);
@@ -92,7 +93,9 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
         } else {
             user.setDirtyMoneySalary(user.getDirtyMoneySalary() - customerSale.getAmount().intValue() * customerDirtySaleRateService.getById(1).getCustomerDirtySaleRate() / 100);
         }
+        product.setStock(product.getStock() + customerSale.getQuantity());
 
+        productRepository.save(product);
         userRepository.save(user);
     }
 
@@ -139,6 +142,8 @@ public class CustomerSaleServiceImpl implements CustomerSaleService {
         stock.setUser(user);
 
         product.setStock(product.getStock() - stock.getQuantityMouvement());
+        customerSale.setStock(stock);
+        stock.setCustomerSale(customerSale);
 
         stockRepository.save(stock);
         productRepository.save(product);

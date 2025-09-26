@@ -8,6 +8,7 @@ import com.gtarp.tabaricobackend.exception.*;
 import com.gtarp.tabaricobackend.repositories.UserRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
 import com.gtarp.tabaricobackend.repositories.accounting.ExporterSaleRepository;
+import com.gtarp.tabaricobackend.repositories.accounting.RewardRepository;
 import com.gtarp.tabaricobackend.services.AbstractCrudService;
 import com.gtarp.tabaricobackend.services.UserService;
 import jakarta.transaction.Transactional;
@@ -39,6 +40,8 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
     private AccountingRebootInformationRepository accountingRebootInformationRepository;
     @Autowired
     private ExporterSaleRepository exporterSaleRepository;
+    @Autowired
+    private RewardRepository rewardRepository;
 
     @Override
     public User getById(Integer id) {
@@ -138,9 +141,9 @@ public class UserServiceImpl extends AbstractCrudService<User, UserRepository, U
 
         // ⚡️ Récompenses configurées en BDD
         int[] rewards = {
-                accountingRebootInformation.getTop1Reward(),
-                accountingRebootInformation.getTop2Reward(),
-                accountingRebootInformation.getTop3Reward()
+                rewardRepository.findAll().get(0).getRewardAmount(),
+                rewardRepository.findAll().get(1).getRewardAmount(),
+                rewardRepository.findAll().get(2).getRewardAmount()
         };
 
         // ⚡️ On mappe le top3 dans une Map<User, reward>

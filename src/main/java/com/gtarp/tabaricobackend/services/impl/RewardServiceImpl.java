@@ -1,32 +1,30 @@
 package com.gtarp.tabaricobackend.services.impl;
 
 import com.gtarp.tabaricobackend.dto.accounting.RewardDto;
-import com.gtarp.tabaricobackend.entities.accounting.AccountingRebootInformation;
-import com.gtarp.tabaricobackend.repositories.accounting.AccountingRebootInformationRepository;
+import com.gtarp.tabaricobackend.entities.accounting.Reward;
+import com.gtarp.tabaricobackend.exception.RewardNotFoundException;
+import com.gtarp.tabaricobackend.repositories.accounting.RewardRepository;
 import com.gtarp.tabaricobackend.services.RewardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RewardServiceImpl implements RewardService {
     @Autowired
-    private AccountingRebootInformationRepository accountingRebootInformationRepository;
+    private RewardRepository rewardRepository;
 
-    public RewardDto[] getAllRewards() {
-        AccountingRebootInformation accountingRebootInformation = accountingRebootInformationRepository.findAll().getFirst();
-        return new RewardDto[]{new RewardDto("1er", accountingRebootInformation.getTop1Reward()), new RewardDto("2er", accountingRebootInformation.getTop2Reward()), new RewardDto("3er", accountingRebootInformation.getTop3Reward())};
+    public List<Reward> getAllRewards() {
+        return rewardRepository.findAll();
     }
 
-    @Override
-    public void setRewards(RewardDto rewards, String position) {
-        AccountingRebootInformation accountingRebootInformation = accountingRebootInformationRepository.findAll().getFirst();
-        if (position.equals("1er")) {
-            accountingRebootInformation.setTop1Reward(rewards.getAmount());
-        } else if (position.equals("2er")) {
-            accountingRebootInformation.setTop2Reward(rewards.getAmount());
-        } else if (position.equals("3er")) {
-            accountingRebootInformation.setTop3Reward(rewards.getAmount());
-        }
-        accountingRebootInformationRepository.save(accountingRebootInformation);
+    public Reward getById(Integer id) {
+        return rewardRepository.findById(id).orElseThrow(() -> new RewardNotFoundException(id));
+    }
+
+    public Reward update(Integer id, RewardDto rewardDto) {
+        Reward updatedReward = getById(rewardDto.getId()).update(rewardDto);
+        return rewardRepository.save(updatedReward);
     }
 }

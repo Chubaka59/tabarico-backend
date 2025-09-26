@@ -1,5 +1,6 @@
 package com.gtarp.tabaricobackend.entities;
 
+import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +29,6 @@ public class Stock {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToOne(mappedBy = "stock")
+    private CustomerSale customerSale;
 }

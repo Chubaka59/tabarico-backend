@@ -3,6 +3,7 @@ package com.gtarp.tabaricobackend.entities.accounting;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gtarp.tabaricobackend.entities.Contract;
 import com.gtarp.tabaricobackend.entities.Product;
+import com.gtarp.tabaricobackend.entities.Stock;
 import com.gtarp.tabaricobackend.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,4 +36,7 @@ public class CustomerSale {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "stock_id")
+    private Stock stock;
 }
