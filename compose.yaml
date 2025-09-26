@@ -4,9 +4,11 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql_db
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
+    ports:
+      - "3306:3306" #a supprimer quand la config sera terminée
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -19,21 +21,27 @@ services:
 
 
   backend:
-    build: ./backend
+    build: ./tabarico-backend
     container_name: tabarico_backend
+    restart: unless-stopped
     depends_on:
       - mysql
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/tabarico?serverTimeZone=UTC
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prod
+      TZ: Europe/Paris
+    volumes:
+      - ./uploads:/app/uploads/images/identityCards
     networks:
       - frontend
       - backend
 
   frontend:
-    build: ./frontend
+    build: ./tabarico-frontend
     container_name: tabarico_frontend
+    restart: unless-stopped
     depends_on:
       - backend
     ports:
@@ -43,6 +51,7 @@ services:
 
 volumes:
   mysql_data:
+  backend_data:
 
 networks:
   backend:
