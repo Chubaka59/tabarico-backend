@@ -57,6 +57,7 @@ public class User implements UpdatableEntity<User, UserDto> {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ExporterSale> exporterSales = new ArrayList<>();
+    private LocalDate dateOfHire;
 
     public User(UserDto userDto) {
         this.username = userDto.getUsername();
@@ -65,6 +66,7 @@ public class User implements UpdatableEntity<User, UserDto> {
         this.firstName = userDto.getFirstName();
         this.phone = userDto.getPhone();
         this.role = userDto.getRole();
+        this.dateOfHire = userDto.getDateOfHire();
     }
 
     public User update(UserDto userDto) {
@@ -76,6 +78,7 @@ public class User implements UpdatableEntity<User, UserDto> {
         this.firstName = userDto.getFirstName();
         this.phone = userDto.getPhone();
         this.role = userDto.getRole();
+        this.dateOfHire = userDto.getDateOfHire();
         return this;
     }
 

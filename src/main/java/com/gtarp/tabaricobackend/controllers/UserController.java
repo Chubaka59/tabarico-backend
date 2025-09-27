@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,8 @@ public class UserController {
             @RequestParam("phone") String phone,
             @RequestParam("role") Integer roleId,
             @RequestParam(value = "password", required = false) String password,
-            @RequestPart(value = "identityCard", required = false) MultipartFile identityCardImage
+            @RequestPart(value = "identityCard", required = false) MultipartFile identityCardImage,
+            @RequestParam("dateOfHire") LocalDate dateOfHire
     ) {
         try {
             UserDto userDto = new UserDto();
@@ -63,6 +65,7 @@ public class UserController {
             userDto.setRole(roleService.getById(roleId));
             userDto.setPassword(password);
             userDto.setIdentityCardImage(identityCardImage);
+            userDto.setDateOfHire(dateOfHire);
             userService.insert(userDto);
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
@@ -95,7 +98,8 @@ public class UserController {
             @RequestParam("phone") String phone,
             @RequestParam("role") Integer roleId,
             @RequestParam(value = "password", required = false) String password,
-            @RequestPart(value = "identityCard", required = false) MultipartFile identityCardImage
+            @RequestPart(value = "identityCard", required = false) MultipartFile identityCardImage,
+            @RequestParam("dateOfHire") LocalDate dateOfHire
     ) {
         try {
             UserDto userDto = new UserDto();
@@ -106,6 +110,7 @@ public class UserController {
             userDto.setRole(roleService.getById(roleId));
             userDto.setPassword(password);
             userDto.setIdentityCardImage(identityCardImage);
+            userDto.setDateOfHire(dateOfHire);
             userService.update(id, userDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {

@@ -102,6 +102,7 @@ public class DashboardServiceImpl implements DashboardService {
 
             dashboardDto.setWarning1(user.isWarning1());
             dashboardDto.setWarning2(user.isWarning2());
+            dashboardDto.setDateOfHire(user.getDateOfHire());
 
             dashboardDtoList.add(dashboardDto);
         }

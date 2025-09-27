@@ -22,4 +22,5 @@ public class DashboardDto {
     private LocalDate endOfHoliday;
     private boolean warning1;
     private boolean warning2;
+    private LocalDate dateOfHire;
 }

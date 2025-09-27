@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,6 @@ public class UserDto {
     @NotNull
     private Role role;
     private MultipartFile identityCardImage;
+    @NotNull
+    private LocalDate dateOfHire;
 }
