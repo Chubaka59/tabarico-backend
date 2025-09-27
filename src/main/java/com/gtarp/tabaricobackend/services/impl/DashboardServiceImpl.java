@@ -71,7 +71,7 @@ public class DashboardServiceImpl implements DashboardService {
             List<CustomerSale> customerSaleList = customerSaleRepository.findAllByUserAndDateAfter(user, lastRebootDate);
             Map<TypeOfSale, Integer> salesByType = getCustomerSalesByTypeOfSales(customerSaleList);
             dashboardDto.setCleanMoneyCustomerSales(salesByType.get(TypeOfSale.cleanMoney) != null ? salesByType.get(TypeOfSale.cleanMoney) : 0);
-            dashboardDto.setDirtyMoneyCustomerSales(salesByType.get(TypeOfSale.dirtyMoney) != null ? salesByType.get(TypeOfSale.cleanMoney) : 0);
+            dashboardDto.setDirtyMoneyCustomerSales(salesByType.get(TypeOfSale.dirtyMoney) != null ? salesByType.get(TypeOfSale.dirtyMoney) : 0);
 
             //On fait la somme de toutes les ventes exportateurs
             List<ExporterSale> exporterSaleList = exporterSaleRepository.findAllByUserAndDateAfter(user, lastRebootDate);
