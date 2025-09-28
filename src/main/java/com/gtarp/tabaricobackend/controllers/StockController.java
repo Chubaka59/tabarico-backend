@@ -39,7 +39,7 @@ public class StockController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Modification du stock impossible", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

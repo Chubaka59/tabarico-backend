@@ -1,6 +1,7 @@
 package com.gtarp.tabaricobackend.entities.accounting;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gtarp.tabaricobackend.entities.Contract;
 import com.gtarp.tabaricobackend.entities.Product;
 import com.gtarp.tabaricobackend.entities.Stock;
@@ -38,5 +39,6 @@ public class CustomerSale {
     private User user;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "stock_id")
+    @JsonManagedReference
     private Stock stock;
 }

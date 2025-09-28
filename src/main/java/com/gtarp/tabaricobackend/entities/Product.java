@@ -2,7 +2,6 @@ package com.gtarp.tabaricobackend.entities;
 
 import com.gtarp.tabaricobackend.dto.ProductDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +18,7 @@ public class Product implements UpdatableEntity<Product, ProductDto> {
     private Integer id;
     @NotBlank
     private String name;
-    @Digits(integer = 3, fraction = 0)
     private Integer cleanMoney;
-    @Digits(integer = 3, fraction = 0)
     private Integer dirtyMoney;
     private Integer stock;
 

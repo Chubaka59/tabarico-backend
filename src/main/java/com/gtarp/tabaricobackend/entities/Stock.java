@@ -1,5 +1,7 @@
 package com.gtarp.tabaricobackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gtarp.tabaricobackend.entities.accounting.CustomerSale;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,7 +30,9 @@ public class Stock {
     private Integer quantityMouvement;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
     @OneToOne(mappedBy = "stock")
+    @JsonBackReference
     private CustomerSale customerSale;
 }

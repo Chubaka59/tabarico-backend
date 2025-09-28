@@ -40,7 +40,7 @@ public class StockServiceImpl implements StockService {
     @Transactional
     @Override
     public void insert(StockDto stockDto, String username) {
-                Stock newStock = new Stock();
+        Stock newStock = new Stock();
         newStock.setDate(LocalDateTime.now());
         newStock.setTypeOfStockMovement(TypeOfStockMovement.stockModification);
         newStock.setQuantityMouvement(stockDto.getQuantity());
