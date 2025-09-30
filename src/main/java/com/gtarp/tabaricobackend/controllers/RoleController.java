@@ -31,7 +31,7 @@ public class RoleController {
             Role role = roleService.getById(id);
             return new ResponseEntity<>(role, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la récupération du role avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -46,7 +46,7 @@ public class RoleController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la création du role", e);
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -57,7 +57,7 @@ public class RoleController {
             roleService.update(id, roleDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour du role avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

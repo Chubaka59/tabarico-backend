@@ -31,7 +31,7 @@ public class ContractController {
             Contract contract = contractService.getById(id);
             return new ResponseEntity<>(contract, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la récupération du contrat avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -46,7 +46,7 @@ public class ContractController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la création du contrat", e);
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -57,7 +57,7 @@ public class ContractController {
             contractService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la suppression du contrat avec l'id : {}", id ,e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -68,7 +68,7 @@ public class ContractController {
             contractService.update(id, contractDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour du consommable avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

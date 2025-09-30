@@ -29,7 +29,7 @@ public class CustomerDirtySaleRateController {
             CustomerDirtySaleRate customerDirtySaleRate = customerDirtySaleRateService.getById(id);
             return new ResponseEntity<>(customerDirtySaleRate, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la récupération du customer dirty sale rate", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -40,7 +40,7 @@ public class CustomerDirtySaleRateController {
             customerDirtySaleRateService.update(id, customerDirtySaleRateDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour du customer dirty sale rate", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

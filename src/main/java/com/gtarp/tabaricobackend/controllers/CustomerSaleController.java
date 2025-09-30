@@ -52,7 +52,7 @@ public class CustomerSaleController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la creation de la vente client", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

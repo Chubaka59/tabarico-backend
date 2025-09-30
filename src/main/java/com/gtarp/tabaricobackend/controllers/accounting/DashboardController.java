@@ -35,7 +35,7 @@ public class DashboardController {
             dashboardService.updateUser(username, dashboardDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour de l'utilisateur depuis le dashboard", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -46,7 +46,7 @@ public class DashboardController {
             dashboardService.setSalesBlocked(blocked);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la modification du blocage des ventes", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

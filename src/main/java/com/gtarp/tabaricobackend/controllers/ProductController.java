@@ -29,7 +29,7 @@ public class ProductController {
             Product product = productService.getById(id);
             return new ResponseEntity<>(product, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la récupération du produit avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -40,7 +40,7 @@ public class ProductController {
             productService.update(id, productDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour du consommable avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

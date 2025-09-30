@@ -40,7 +40,7 @@ public class UserController {
             User user = userService.getById(id);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la récupération de l'utilisateur avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -73,7 +73,7 @@ public class UserController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la création de l'utilisateur", e);
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -84,7 +84,7 @@ public class UserController {
             userService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la suppression de l'utilisateur avec l'id : {}", id ,e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -114,7 +114,7 @@ public class UserController {
             userService.update(id, userDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour de l'utilisateur avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -125,7 +125,7 @@ public class UserController {
             userService.updatePassword(authentication.getName(), body.get("newPassword"));
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la modification du mot de passe pour l'utilisateur : {}", authentication.getName(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -136,7 +136,7 @@ public class UserController {
             userService.resetWeeklyUserAccounting();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la réinitialisation de la compta");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

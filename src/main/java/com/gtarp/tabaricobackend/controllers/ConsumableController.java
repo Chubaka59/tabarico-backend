@@ -31,7 +31,7 @@ public class ConsumableController {
             Consumable consumable = consumableService.getById(id);
             return new ResponseEntity<>(consumable, HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la récupération du consommable avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -46,7 +46,7 @@ public class ConsumableController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la création du consommable", e);
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -57,7 +57,7 @@ public class ConsumableController {
             consumableService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la suppression du consommable avec l'id : {}", id ,e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -68,7 +68,7 @@ public class ConsumableController {
             consumableService.update(id, consumableDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour du consommable avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

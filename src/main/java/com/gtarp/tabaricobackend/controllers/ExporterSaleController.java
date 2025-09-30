@@ -46,7 +46,7 @@ public class ExporterSaleController {
                     .toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la creation de la vente exportateur", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -29,7 +29,7 @@ public class RewardController {
             rewardService.update(id, rewardDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Erreur lors de la mise à jour de la récompense avec l'id : {}", id, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
