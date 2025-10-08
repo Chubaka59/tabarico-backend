@@ -128,6 +128,6 @@ public class ExporterSaleServiceImpl implements ExporterSaleService {
             level = 100;
         }
         //36 est le prix d'une cigarette de base. on ajoute ensuite un bonus de 0.3% de 36 en fonction du niveau du vendeur et on multiplie par le nombre de cigarette
-        return BigDecimal.valueOf((36+(36*(level*0.3/100)))*quantity).setScale(0, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf((51+(51*(level*0.3/100)))*quantity).setScale(0, RoundingMode.HALF_UP);
     }
 }
