@@ -2,6 +2,7 @@ package com.gtarp.tabaricobackend.services.impl;
 
 import com.gtarp.tabaricobackend.dto.ConsumableDto;
 import com.gtarp.tabaricobackend.dto.StockDto;
+import com.gtarp.tabaricobackend.dto.ShowStockDto;
 import com.gtarp.tabaricobackend.entities.Consumable;
 import com.gtarp.tabaricobackend.entities.Product;
 import com.gtarp.tabaricobackend.entities.Stock;
@@ -62,7 +63,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<Stock> getStockDtoListByDate(String date) {
-        return stockRepository.getStockByDateBetween(LocalDate.parse(date).atStartOfDay(), LocalDate.parse(date).plusDays(1).atStartOfDay());
+    public List<ShowStockDto> getStockDtoListByDate(String date) {
+        List<Stock> stockList = stockRepository.getStockByDateBetween(LocalDate.parse(date).atStartOfDay(), LocalDate.parse(date).plusDays(1).atStartOfDay());
+        return stockRepository.findAll()
+                .stream()
+                .map(ShowStockDto::new) // ✅ Appel direct au constructeur
+                .toList(); // ou .collect(Collectors.toList()) si Java 8
     }
 }

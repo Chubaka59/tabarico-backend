@@ -1,5 +1,6 @@
 package com.gtarp.tabaricobackend.controllers;
 
+import com.gtarp.tabaricobackend.dto.ShowStockDto;
 import com.gtarp.tabaricobackend.dto.StockDto;
 import com.gtarp.tabaricobackend.entities.Stock;
 import com.gtarp.tabaricobackend.services.StockService;
@@ -45,7 +46,7 @@ public class StockController {
     }
 
     @GetMapping("/stocks")
-    public List<Stock> getStockDtoListByDate(@PathParam("date") String date) {
+    public List<ShowStockDto> getStockDtoListByDate(@PathParam("date") String date) {
         return stockService.getStockDtoListByDate(date);
     }
 }

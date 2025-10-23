@@ -1,5 +1,6 @@
 package com.gtarp.tabaricobackend.services;
 
+import com.gtarp.tabaricobackend.dto.ShowStockDto;
 import com.gtarp.tabaricobackend.dto.StockDto;
 import com.gtarp.tabaricobackend.entities.Stock;
 
@@ -17,5 +18,5 @@ public interface StockService {
      * @param date the date of the stock mouvements
      * @return a list of StockDto
      */
-    List<Stock> getStockDtoListByDate(String date);
+    List<ShowStockDto> getStockDtoListByDate(String date);
 }
