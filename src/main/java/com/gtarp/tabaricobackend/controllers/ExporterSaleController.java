@@ -50,4 +50,15 @@ public class ExporterSaleController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/exportersales/{id}/verify")
+    public ResponseEntity<Boolean> verify(@PathVariable int id, @RequestBody boolean verified) {
+        try {
+            exporterSaleService.verifySale(id, verified);
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            log.error("Erreur lors de la verification de la vente exportateur", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -34,4 +34,11 @@ public interface ExporterSaleService {
      * @return a list of exporter sale
      */
     List<ExporterSaleDto> getExporterSalesDtoListByDate(String date);
+
+    /**
+     * validate if a sales is verified or not
+     * @param id the id of the sales
+     * @param verified a boolean if verified or not
+     */
+    void verifySale(int id, boolean verified);
 }

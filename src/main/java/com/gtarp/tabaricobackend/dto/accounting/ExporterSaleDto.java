@@ -20,6 +20,7 @@ public class ExporterSaleDto {
     private Integer level;
     private BigDecimal employeeAmount;
     private BigDecimal companyAmount;
+    private boolean verified;
 
     public ExporterSaleDto(ExporterSale exporterSale) {
         this.id = exporterSale.getId();
@@ -29,5 +30,6 @@ public class ExporterSaleDto {
         this.level = exporterSale.getLevel();
         this.employeeAmount = exporterSale.getEmployeeAmount();
         this.companyAmount = exporterSale.getCompanyAmount();
+        this.verified = exporterSale.isVerified();
     }
 }

@@ -28,4 +28,10 @@ public class ExporterSale {
     private Integer level;
     private BigDecimal employeeAmount;
     private BigDecimal companyAmount;
+    private boolean verified;
+
+    public ExporterSale verifySale(boolean verified) {
+        this.verified = verified;
+        return this;
+    }
 }
